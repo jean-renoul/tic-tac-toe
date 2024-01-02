@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
-from ia2 import *
+from ia2 import * 
 
 
 
@@ -52,15 +52,17 @@ def click(row, col):
 
             button = window.grid_slaves(row=row, column=col)[0]
             button.config(text=board[row][col])
+            try:
+                if joueur_humain == "X":
+                    ia_row, ia_col = ia(board,"O")
+                    print (ia_row, ia_col)
+                else:
+                    ia_row, ia_col = ia(board,"X")
 
-            if joueur_humain == "X":
-                ia_row, ia_col = ia(board,"O")
-                print (ia_row, ia_col)
-            else:
-                ia_row, ia_col = ia(board,"X")
-
-            button = window.grid_slaves(row=ia_row, column=ia_col)[0]
-            button.config(text=board[ia_row][ia_col])
+                button = window.grid_slaves(row=ia_row, column=ia_col)[0]
+                button.config(text=board[ia_row][ia_col])
+            except TypeError:
+                pass
 
         check_victoire()
 
