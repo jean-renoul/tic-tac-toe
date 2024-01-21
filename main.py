@@ -1,25 +1,56 @@
 import tkinter as tk
 from tkinter import messagebox
-from ia2 import * 
+from ia import *
+from ia2 import *
 
 
 
-versus = messagebox.askyesno("Tic Tac Toe","Voulez vous jouer à deux joueurs ?")
-if versus == False:
-    message_ia = messagebox.askyesno("Tic Tac Toe", "Voulez vous jouer contre un ordinateur ?")
 
-
+#versus = messagebox.askyesno("Tic Tac Toe","Voulez vous jouer à deux joueurs ?")
+#if versus == False:
+    #message_ia = messagebox.askyesno("Tic Tac Toe", "Voulez vous jouer contre un ordinateur ?")
 window = tk.Tk()
 window.title("Tic Tac Toe")
 
+
+versus = False
+ia_facile = False
+ia_difficile = False
+
+def creer_menu():
+    global versus
+    global ia_facile
+    global ia_difficile
+
+    bouton_versus = tk.Button(window, text="Jouer à deux joueurs", font=("Arial", 10), height=10, width=40, bg="green", command=lambda: [creer_plateau(True, False, False),bouton_versus.grid_forget(),bouton_ia_facile.grid_forget(),bouton_ia_difficile.grid_forget(),bouton_quitter.grid_forget()])
+    bouton_versus.grid(row=0, column=0, sticky="nsew")
+    bouton_ia_facile = tk.Button(window, text="Ordinateur facile", font=("Arial", 10), height=10, width=40, bg="green", command=lambda: [creer_plateau(False, True, False),bouton_versus.grid_forget(),bouton_ia_facile.grid_forget(),bouton_ia_difficile.grid_forget(),bouton_quitter.grid_forget()])
+    bouton_ia_facile.grid(row=1, column=0, sticky="nsew")
+    bouton_ia_difficile = tk.Button(window, text="Ordinateur difficile", font=("Arial", 10), height=10, width=40, bg="green", command=lambda: [creer_plateau(False, False, True),bouton_versus.grid_forget(),bouton_ia_facile.grid_forget(),bouton_ia_difficile.grid_forget(),bouton_quitter.grid_forget()])
+    bouton_ia_difficile.grid(row=2, column=0, sticky="nsew")
+    bouton_quitter = tk.Button(window, text="Quitter", font=("Arial", 10), height=10, width=40, bg="red", command=lambda: [window.quit()])
+    bouton_quitter.grid(row=3, column=0, sticky="nsew")
+
+creer_menu()
+
+
+
 # Crée le plateau
-def creer_plateau():
+def creer_plateau(versus_mode, ia_facile_mode, ia_difficile_mode):
+    global versus
+    global ia_facile
+    global ia_difficile
+
+    versus = versus_mode
+    ia_facile = ia_facile_mode
+    ia_difficile = ia_difficile_mode
+
     for i in range(3):
         for j in range(3):
             button = tk.Button(window, text="", font=("Arial", 50), height=2, width=6, bg="green", command=lambda row=i, col=j: click(row, col))
             button.grid(row=i, column=j, sticky="nsew")
 
-creer_plateau()
+
 
 # Variables globales
 board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
@@ -43,7 +74,7 @@ def click(row, col):
             button.config(text=board[row][col])
 
             check_victoire()
-    elif message_ia:
+    if ia_facile:
         if board[row][col] == 0:
             if joueur_humain == "X":        
                 board[row][col] = "X"
@@ -54,10 +85,32 @@ def click(row, col):
             button.config(text=board[row][col])
             try:
                 if joueur_humain == "X":
-                    ia_row, ia_col = ia(board,"O")
+                    ia_row, ia_col = ia1(board,"O")
                     print (ia_row, ia_col)
                 else:
-                    ia_row, ia_col = ia(board,"X")
+                    ia_row, ia_col = ia1(board,"X")
+
+                button = window.grid_slaves(row=ia_row, column=ia_col)[0]
+                button.config(text=board[ia_row][ia_col])
+            except TypeError:
+                pass
+
+        check_victoire()
+    if ia_difficile:
+        if board[row][col] == 0:
+            if joueur_humain == "X":        
+                board[row][col] = "X"
+            else:
+                 board[row][col] = "O"
+
+            button = window.grid_slaves(row=row, column=col)[0]
+            button.config(text=board[row][col])
+            try:
+                if joueur_humain == "X":
+                    ia_row, ia_col = ia2(board,"O")
+                    print (ia_row, ia_col)
+                else:
+                    ia_row, ia_col = ia2(board,"X")
 
                 button = window.grid_slaves(row=ia_row, column=ia_col)[0]
                 button.config(text=board[ia_row][ia_col])
