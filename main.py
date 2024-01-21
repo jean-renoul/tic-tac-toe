@@ -3,20 +3,15 @@ from tkinter import messagebox
 from ia import *
 from ia2 import *
 
-
-
-
-#versus = messagebox.askyesno("Tic Tac Toe","Voulez vous jouer à deux joueurs ?")
-#if versus == False:
-    #message_ia = messagebox.askyesno("Tic Tac Toe", "Voulez vous jouer contre un ordinateur ?")
 window = tk.Tk()
 window.title("Tic Tac Toe")
 
-
+# Variables de mode de jeu
 versus = False
 ia_facile = False
 ia_difficile = False
 
+# Fonction pour créer le menu, décidera du mode de jeu en fonction du bouton cliqué
 def creer_menu():
     global versus
     global ia_facile
@@ -31,6 +26,7 @@ def creer_menu():
     bouton_quitter = tk.Button(window, text="Quitter", font=("Arial", 10), height=10, width=40, bg="red", command=lambda: [window.quit()])
     bouton_quitter.grid(row=3, column=0, sticky="nsew")
 
+# Appel de la fonction pour créer le menu
 creer_menu()
 
 
@@ -57,10 +53,11 @@ board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
 joueur_actuel = 1
 joueur_humain = "X"
 
-# Fonction pour clicker sur les cases
+# Fonction pour cliquer sur les cases
 def click(row, col):
     global joueur_actuel
 
+    # En 1v1, on vérifie si la case cliquée est vide, on la met à jour puis on change de joueur  
     if versus:
         if board[row][col] == 0:
             if joueur_actuel == 1:
@@ -73,7 +70,10 @@ def click(row, col):
             button = window.grid_slaves(row=row, column=col)[0]
             button.config(text=board[row][col])
 
+            # On vérifie si un joueur gagne
             check_victoire()
+
+    # Contre l'IA, on vérifie si la case cliquée est vide, on la met à jour puis on appelle la fonction de l'IA, qui détermine quelle case jouer
     if ia_facile:
         if board[row][col] == 0:
             if joueur_humain == "X":        
@@ -94,8 +94,8 @@ def click(row, col):
                 button.config(text=board[ia_row][ia_col])
             except TypeError:
                 pass
-
         check_victoire()
+
     if ia_difficile:
         if board[row][col] == 0:
             if joueur_humain == "X":        
@@ -116,10 +116,9 @@ def click(row, col):
                 button.config(text=board[ia_row][ia_col])
             except TypeError:
                 pass
-
         check_victoire()
 
-# Check si un des joueurs gagne
+# Fonction pour vérifier si l'un des joueurs gagne
 def check_victoire():
     gagnant = None
 
